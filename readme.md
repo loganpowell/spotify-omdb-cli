@@ -1,4 +1,4 @@
-#Getting Spotify Tracks or Movies from OMDB via CLI
+#Getting Spotify Tracks or Movies from themoviedb APIs via CLI
 
 ## Instructions
 
