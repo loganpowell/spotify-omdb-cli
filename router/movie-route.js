@@ -6,8 +6,8 @@ let movieRoute = () => {
   let schema = {
     properties: {
       searchType: {
-        description: 'Would you like to search through "movies", "tv" or "actors"?',
-        pattern: /movies|tv|actors/,
+        description: 'Would you like to search through "movies", "tv" or "people"?',
+        pattern: /movies|tv|people/,
         message: 'Please use one of the terms provided in "" above',
         type: 'string',
         required: true
@@ -29,22 +29,10 @@ let movieRoute = () => {
       searchType = 'movie'
     } else if (userInput.searchType === 'tv') {
       searchType = userInput.searchType
-    } else if (userInput.searchType === 'actors') {
+    } else if (userInput.searchType === 'people') {
       searchType = 'person'
     }
-    // let omdbURL = `http://www.omdbapi.com/?s=${searchTerm}&type=${searchType}`
-    // console.log(omdbURL)
-    //
-    // let outputModel = (results) => {
-    //   if (searchType === 'movie' || 'series') {
-    //     results.forEach((result) => {
-    //       console.log('Movie Title: ' + result.title)
-    //       console.log('Year Released: ' + result.year)
-    //     }
-    //   } else if (searchType === '')
-    // }
 
-  // testing: https://www.themoviedb.org/settings/api
     let outputModel  = (results) => {
       if (searchType === 'movie') {
         results.forEach((result) => {
@@ -108,3 +96,20 @@ let movieRoute = () => {
 
 
 module.exports.movieRoute = movieRoute
+
+
+
+
+// let omdbURL = `http://www.omdbapi.com/?s=${searchTerm}&type=${searchType}`
+// console.log(omdbURL)
+//
+// let outputModel = (results) => {
+//   if (searchType === 'movie' || 'series') {
+//     results.forEach((result) => {
+//       console.log('Movie Title: ' + result.title)
+//       console.log('Year Released: ' + result.year)
+//     }
+//   } else if (searchType === '')
+// }
+
+// testing: https://www.themoviedb.org/settings/api
