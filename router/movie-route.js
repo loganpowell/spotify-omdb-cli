@@ -1,5 +1,10 @@
+
 const prompt = require('prompt')
 const request = require('request')
+const co = require('co')
+
+const twitter = require('../twitter/twitter.js')
+
 
 let movieRoute = () => {
 
@@ -34,48 +39,6 @@ let movieRoute = () => {
       searchType = 'person'
     }
 
-
-    let outputModel  = (results) => {
-      if (searchType === 'movie') {
-        results.forEach((result) => {
-          console.log('Title: ' + result.title)
-          console.log('Viewer Ratings: ' + result.vote_count)
-          console.log('Average Viewer Rating: ' + result.vote_average)
-          console.log('Overview: ' + result.overview +
-          '\n\n----------------------------------------- \n')
-        })
-      } else if (searchType === 'tv') {
-        results.forEach((result) => {
-          console.log('Name: ' + result.name)
-          console.log('Viewer Ratings: ' + result.vote_count)
-          console.log('Average Viewer Rating: ' + result.vote_average)
-          console.log('Overview: ' + result.overview +
-          '\n\n----------------------------------------- \n')
-        })
-      } else if (searchType === 'person') {
-        results.forEach((result) => {
-          console.log(result.name)
-          console.log('- Known for:')
-          relatedTitles(result)
-          console.log(
-          '\n----------------------------------------- \n')
-        })
-      }
-    }
-
-    let relatedTitles = (result) => {
-      result.known_for.forEach((title) => {
-        // console.log(title)
-        if (title.media_type === 'movie') {
-          console.log('-- Title: ' + title.title)
-          console.log('--- Type: ' + title.media_type)
-        } else {
-          console.log('-- Title: ' + title.name)
-          console.log('--- Type: ' + title.media_type)
-        }
-      })
-    }
-
     let tmdbKey = 'b7f8f796a8bb100d21d60c192c689ac6'
     let tmdbURL = `https://api.themoviedb.org/3/search/${searchType}?api_key=${tmdbKey}&language=en-US&query=${searchTerm}&page=1`
 
@@ -96,7 +59,59 @@ let movieRoute = () => {
         }
       })
     }
+
     movieSearch()
+
+    let outputModel  = (results) => {
+      if (searchType === 'movie') {
+        console.log('in the outputModel')
+        results.forEach((result) => {
+          co(function* () {
+            console.log('Title: ' + result.title)
+            console.log('Viewer Ratings: ' + result.vote_count)
+            console.log('Average Viewer Rating: ' + result.vote_average)
+            console.log('Overview: ' + result.overview)
+            yield twitter.tweetSearch(result.title)
+          }).catch('bummer')
+          console.log('\n----------------------------------------- \n')
+        })
+      } else if (searchType === 'tv') {
+        results.forEach((result) => {
+          co(function* () {
+            console.log('Name: ' + result.name)
+            console.log('Viewer Ratings: ' + result.vote_count)
+            console.log('Average Viewer Rating: ' + result.vote_average)
+            console.log('Overview: ' + result.overview)
+            yield twitter.tweetSearch(result.name)
+          }).catch('bummer')
+          console.log('\n----------------------------------------- \n')
+        })
+      } else if (searchType === 'person') {
+        results.forEach((result) => {
+          co(function* () {
+            console.log('Name: ' + result.name)
+            console.log('- Known for:')
+            relatedTitles(result)
+            yield twitter.tweetSearch(result.name)
+          }).catch('bummer')
+          console.log('\n----------------------------------------- \n')
+        })
+      }
+    }
+
+    let relatedTitles = (result) => {
+      result.known_for.forEach((title) => {
+        // console.log(title)
+        if (title.media_type === 'movie') {
+          console.log('-- Title: ' + title.title)
+          console.log('--- Type: ' + title.media_type)
+        } else {
+          console.log('-- Title: ' + title.name)
+          console.log('--- Type: ' + title.media_type)
+        }
+      })
+    }
+
   })
 }
 

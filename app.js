@@ -1,3 +1,4 @@
+// const Promise = require('bluebird')
 const prompt = require('prompt')
 const request = require('request')
 
