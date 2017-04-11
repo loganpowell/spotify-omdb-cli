@@ -4,10 +4,10 @@ const twitter = require('twitter')
 
 console.log('this is loaded');
 var config = {
-  consumer_key: 'xe11rKjC57Q6qqs0hgGDmi9Mx',
-  consumer_secret: 'sHFc6A7YdbOb4fjN7lauUjdXfOTaGOJH7wQ15ih5moxo2phKZl',
-  access_token_key: '424546772-z8X7JnIKLJhOvW08WYa02ThK5ejNZrYySI3T0BPG',
-  access_token_secret: 'on7ymAZ7UyjmzFo17vfbeEj1y26i7T0h2BHvggsFBbexw',
+  consumer_key: '',
+  consumer_secret: '',
+  access_token_key: '',
+  access_token_secret: '',
 }
 let client = new twitter(config)
 
