@@ -33,44 +33,48 @@ let spotifyRoute = () => {
     let outputModel = (results) => {
       if (searchType === 'album') {
         results.forEach((result) => {
-          co(function* () {
-            console.log(result.name)
-            console.log('Artist: ' + result.artists[0].name)
-            console.log('Play it!: ' + result.artists[0].external_urls.spotify)
-            yield twitter.tweetSearch(result.name)
+          co(function* () { res = {
+            ALBUM: result.name,
+            ARTIST: result.artists[0].name,
+            PLAY: result.artists[0].external_urls.spotify,
+            TWEETS: yield twitter.tweetSearch(result.name)
+          }
+          console.log(res)
           }).catch('bummer')
-          console.log('\n----------------------------------------- \n')
         })
       } else if (searchType === 'artist') {
         results.forEach((result) => {
-          co(function* () {
-            console.log(result.name)
-            console.log('Follower Count: ' + result.followers.total)
-            console.log("Check'em out: " + result.external_urls.spotify)
-            yield twitter.tweetSearch(result.name)
+          co(function* () { res = {
+            ARTIST: result.name,
+            FOLLOWERS: result.followers.total,
+            PLAY: result.external_urls.spotify,
+            TWEETS: yield twitter.tweetSearch(result.name)
+          }
+          console.log(res)
           }).catch('bummer')
-          console.log('\n----------------------------------------- \n')
         })
       } else if (searchType === 'track') {
         results.forEach((result) => {
-          co(function* () {
-            console.log(result.name)
-            console.log('Artist: ' + result.artists[0].name)
-            console.log("Play it!: " + result.external_urls.spotify)
-            yield twitter.tweetSearch(result.name)
+          co(function* () { res = {
+            TRACK: result.name,
+            ARTIST: result.artists[0].name,
+            PLAY: result.external_urls.spotify,
+            TWEETS: yield twitter.tweetSearch(result.name)
+          }
+          console.log(res)
           }).catch('bummer')
-          console.log('\n----------------------------------------- \n')
         })
       } else if (searchType === 'playlist') {
         results.forEach((result) => {
-          co(function* () {
-            console.log('Playlist: ' + result.name)
-            console.log('Owner: ' + result.owner.id)
-            console.log('Track Count: ' + result.tracks.total)
-            console.log("Play it!: " + result.external_urls.spotify)
-            yield twitter.tweetSearch(result.name)
+          co(function* () { res = {
+            PLAYLIST: result.name,
+            DJ: result.owner.id,
+            TRACK_COUNT: result.tracks.total,
+            PLAY: result.external_urls.spotify,
+            TWEETS: yield twitter.tweetSearch(result.name)
+          }
+          console.log(res)
           }).catch('bummer')
-          console.log('\n----------------------------------------- \n')
         })
       }
     }

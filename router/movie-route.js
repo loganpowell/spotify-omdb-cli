@@ -66,52 +66,61 @@ let movieRoute = () => {
       if (searchType === 'movie') {
         console.log('in the outputModel')
         results.forEach((result) => {
-          co(function* () {
-            console.log('Title: ' + result.title)
-            console.log('Viewer Ratings: ' + result.vote_count)
-            console.log('Average Viewer Rating: ' + result.vote_average)
-            console.log('Overview: ' + result.overview)
-            yield twitter.tweetSearch(result.title)
+          co(function* () { res = {
+              TITLE: result.title,
+              AVE_RATING: result.vote_average,
+              RATING_COUNT: result.vote_count,
+              OVERVIEW: result.overview,
+              LATEST_TWEET: yield twitter.tweetSearch(result.title)
+            }
+          console.log(res)
           }).catch('bummer')
-          console.log('\n----------------------------------------- \n')
         })
       } else if (searchType === 'tv') {
         results.forEach((result) => {
-          co(function* () {
-            console.log('Name: ' + result.name)
-            console.log('Viewer Ratings: ' + result.vote_count)
-            console.log('Average Viewer Rating: ' + result.vote_average)
-            console.log('Overview: ' + result.overview)
-            yield twitter.tweetSearch(result.name)
+          co(function* () { res = {
+              NAME: result.name,
+              AVE_RATING: result.vote_average,
+              RATING_COUNT: result.vote_count,
+              OVERVIEW: result.overview,
+              LATEST_TWEET: yield twitter.tweetSearch(result.name)
+            }
+          console.log(res)
           }).catch('bummer')
-          console.log('\n----------------------------------------- \n')
         })
       } else if (searchType === 'person') {
         results.forEach((result) => {
-          co(function* () {
-            console.log('Name: ' + result.name)
-            console.log('- Known for:')
-            relatedTitles(result)
-            yield twitter.tweetSearch(result.name)
+          co(function* () { res = {
+              NAME: result.name,
+              RELATED_TITLES: yield relatedTitles(result),
+              LATEST_TWEET: yield twitter.tweetSearch(result.name)
+            }
+          console.log(res)
           }).catch('bummer')
-          console.log('\n----------------------------------------- \n')
         })
       }
     }
 
-    let relatedTitles = (result) => {
-      result.known_for.forEach((title) => {
-        // console.log(title)
-        if (title.media_type === 'movie') {
-          console.log('-- Title: ' + title.title)
-          console.log('--- Type: ' + title.media_type)
-        } else {
-          console.log('-- Title: ' + title.name)
-          console.log('--- Type: ' + title.media_type)
-        }
+    function relatedTitles(result) {
+      return new Promise((resolve, reject) => {
+        result.known_for.forEach((title) => {
+          // console.log(title)
+          if (title.media_type === 'movie') { res = {
+              TITLE: title.title,
+              TYPE: title.media_type
+            }
+            resolve(res)
+          } else if (title.media_type === 'tv'){ res = {
+              TITLE: title.name,
+              TYPE: title.media_type
+            }
+            resolve(res)
+          } else {
+            reject('nada')
+          }
+        })
       })
     }
-
   })
 }
 
